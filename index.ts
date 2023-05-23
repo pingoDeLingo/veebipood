@@ -6,6 +6,7 @@ import aadresscontroller from "./controllers/aadresscontroller";
 import maksestaatusController from "./controllers/maksestaatusController";
 import arveridacontroller from "./controllers/arveridacontroller";
 
+
 const bodyParser = require('body-parser');
 const app: Express = express();
 
