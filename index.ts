@@ -5,6 +5,7 @@ import toodecontroller from "./controllers/toodecontroller";
 import aadresscontroller from "./controllers/aadresscontroller";
 import maksestaatusController from "./controllers/maksestaatusController";
 import arveridacontroller from "./controllers/arveridacontroller";
+import kontaktAndmedController from "./Controllers/kontaktAndmedController";
 
 
 const bodyParser = require('body-parser');
@@ -32,6 +33,7 @@ app.use('/', kategooriacontroller);
 app.use('/', aadresscontroller);
 app.use('/', maksestaatusController);
 app.use('/', arveridacontroller);
+app.use('/', kontaktAndmedController);
 
 app.listen(3000,() => {
     console.log(`[server]: Server is running at http://localhost:3000`);
