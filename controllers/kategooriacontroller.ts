@@ -3,7 +3,7 @@ import Kategooria from '../models/kategooria';
 
 const router: Router = Router();
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/kategooria', async (req: Request, res: Response) => {
     try {
         const kategooriaData = await Kategooria.find();
         res.json(kategooriaData);
@@ -13,7 +13,7 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/kategooria', async (req: Request, res: Response) => {
     try {
         const { nimetus } = req.body;
         const newKategooria = new Kategooria({ nimetus });
@@ -25,7 +25,7 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
-router.put('/:id', async (req: Request, res: Response) => {
+router.put('/kategooria/:id', async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const { nimetus } = req.body;
@@ -40,7 +40,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/kategooria/:id', async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const deletedKategooria = await Kategooria.findByIdAndDelete(id);
