@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 import kategooriacontroller from "./controllers/kategooriacontroller";
 import toodecontroller from "./controllers/toodecontroller";
 import aadresscontroller from "./controllers/aadresscontroller";
-
+import maksestaatusController from "./controllers/maksestaatusController";
+import arveridacontroller from "./controllers/arveridacontroller";
 
 const bodyParser = require('body-parser');
 const app: Express = express();
@@ -28,6 +29,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use('/', toodecontroller);
 app.use('/', kategooriacontroller);
 app.use('/', aadresscontroller);
+app.use('/', maksestaatusController);
+app.use('/', arveridacontroller);
 
 app.listen(3000,() => {
     console.log(`[server]: Server is running at http://localhost:3000`);
