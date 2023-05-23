@@ -1,7 +1,5 @@
 import { Router, Request, Response } from 'express';
 import KontaktAndmed from "../models/kontaktAndmed";
-import Maksestaatus from "../models/maksestaatus";
-import Kategooria from "../models/kategooria";
 
 const router: Router = Router();
 
