@@ -5,7 +5,7 @@ import toodecontroller from "./controllers/toodecontroller";
 import aadresscontroller from "./controllers/aadresscontroller";
 import maksestaatusController from "./Controllers/maksestaatusController";
 import kontaktAndmedController from "./Controllers/kontaktAndmedController";
-
+import klientController from "./Controllers/klientController";
 
 const bodyParser = require('body-parser');
 const app: Express = express();
@@ -32,6 +32,7 @@ app.use('/', kategooriacontroller);
 app.use('/', aadresscontroller);
 app.use('/', maksestaatusController);
 app.use('/', kontaktAndmedController);
+app.use('/', klientController);
 
 app.listen(3000,() => {
     console.log(`[server]: Server is running at http://localhost:3000`);
