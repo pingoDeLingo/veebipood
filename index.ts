@@ -5,7 +5,7 @@ import toodecontroller from "./controllers/toodecontroller";
 import aadresscontroller from "./controllers/aadresscontroller";
 import maksestaatusController from "./controllers/maksestaatusController";
 import arveridacontroller from "./controllers/arveridacontroller";
-import kontaktAndmedController from "./Controllers/kontaktAndmedController";
+import kontaktAndmedController from "./controllers/kontaktAndmedController";
 
 
 const bodyParser = require('body-parser');
