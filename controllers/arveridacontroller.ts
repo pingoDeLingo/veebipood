@@ -15,23 +15,22 @@ router.get('/arverida', async (req: Request, res: Response) => {
 });
 
 router.post('/arverida', async (req: Request, res: Response) => {
-
-    const toode = new Toode({
-        nimetus: req.body.toode.nimetus,
-        kategooria: req.body.toode.kategooria,
-        hind: req.body.toode.hind,
-        pildiURL: req.body.toode.pildiURL,
-        aktiivne: req.body.toode.aktiivne,
-        laokogus: req.body.toode.laokogus,
-        vananemisaeg: req.body.toode.vananemisaeg
-    })
+    const toodeid = req.body.toode._id;
+    const toodePromise = Toode.findById(toodeid).exec();
 
     try {
+        const toode = await toodePromise;
+
+        if (!toode) {
+            throw new Error(toodeid)
+        }
+
         const savedToode = await toode.save();
         const newArverida = new Arverida({
             toode: savedToode._id,
             kogus: req.body.kogus
-        })
+        });
+
         const savedArverida = await newArverida.save();
         res.status(201).json(savedArverida);
     } catch (error) {
@@ -39,6 +38,7 @@ router.post('/arverida', async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 router.put('/arverida/:id', async (req: Request, res: Response) => {
     try {

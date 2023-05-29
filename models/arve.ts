@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const arveSchema = new mongoose.Schema({
-    kuupäev: {
+    kuupaev: {
         type: Date,
         required: true
     },

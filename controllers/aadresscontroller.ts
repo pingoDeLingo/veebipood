@@ -16,8 +16,8 @@ router.get('/aadress', async (req: Request, res: Response) => {
 
 router.post('/aadress', async (req: Request, res: Response) => {
     try {
-        const { tänav, maja, linn, postiindeks } = req.body;
-        const newAadress = new Aadress({ tänav, maja, linn, postiindeks });
+        const { tanav, maja, linn, postiindeks } = req.body;
+        const newAadress = new Aadress({ tanav, maja, linn, postiindeks });
         const savedAadress = await newAadress.save();
         res.status(201).json(savedAadress);
     } catch (error) {
@@ -29,8 +29,8 @@ router.post('/aadress', async (req: Request, res: Response) => {
 router.put('/aadress/:id', async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { tänav, maja, linn, postiindeks } = req.body;
-        const updatedAadress = await Aadress.findByIdAndUpdate(id, { tänav, maja, linn, postiindeks }, { new: true });
+        const { tanav, maja, linn, postiindeks } = req.body;
+        const updatedAadress = await Aadress.findByIdAndUpdate(id, { tanav, maja, linn, postiindeks }, { new: true });
         if (!updatedAadress) {
             return res.status(404).json({ error: 'Aadress not found' });
         }

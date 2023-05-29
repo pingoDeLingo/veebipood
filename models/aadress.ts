@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const aadressSchema = new mongoose.Schema({
-    tänav: {
+    tanav: {
         type: String,
         required: true
     },

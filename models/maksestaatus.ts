@@ -5,13 +5,13 @@ const maksestaatusSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
-    maksmiseTähtaeg: {
+    maksmiseTahtaeg: {
         type: Date
     },
     makstudSumma: {
         type: Number
     },
-    maksmiseKuupäev: {
+    maksmiseKuupaev: {
         type: Date
     }
 });
