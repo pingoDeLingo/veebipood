@@ -1,16 +1,17 @@
 # Veebipood
 
-Project Overview
-This project 
+- Installation
 
-Installation
 Clone the reop and Install all dependencies
 
-Usage
+-Usage
+
 Open it by using nodemon index.ts and from there you can insert data about the street, city, aadress and postcode 
 
-Contact Information
+- Contact Information
+
 karl-markus.vaher@voco.ee
 
-Troubleshooting
+- Troubleshooting
+
 If there are any issues let us know 
