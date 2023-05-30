@@ -1,10 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Veebipood</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aadress API UI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Express & Typescript index html</h1>
+
+<body class="bg-gray-100">
+<div class="container mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-4">Aadress</h1>
+
+    <!-- Add Aadress Form -->
+    <div class="mb-4">
+        <h2 class="text-xl font-semibold mb-2">Add Aadress</h2>
+        <form id="addAadressForm" class="bg-white p-4 rounded shadow">
+            <div class="mb-4">
+                <label for="tanav" class="block mb-2">Tanav:</label>
+                <input type="text" id="tanav" name="tanav" class="w-full border rounded py-2 px-3">
+            </div>
+            <div class="mb-4">
+                <label for="maja" class="block mb-2">Maja:</label>
+                <input type="text" id="maja" name="maja" class="w-full border rounded py-2 px-3">
+            </div>
+            <div class="mb-4">
+                <label for="linn" class="block mb-2">Linn:</label>
+                <input type="text" id="linn" name="linn" class="w-full border rounded py-2 px-3">
+            </div>
+            <div class="mb-4">
+                <label for="postiindeks" class="block mb-2">Postiindeks:</label>
+                <input type="text" id="postiindeks" name="postiindeks" class="w-full border rounded py-2 px-3">
+            </div>
+            <button type="submit" class="bg-blue-500 text-white rounded py-2 px-4">Add</button>
+        </form>
+    </div>
+
+    <!-- Aadress List -->
+    <div>
+        <h2 class="text-xl font-semibold mb-2">Aadress List</h2>
+        <table class="w-full border">
+            <thead>
+            <tr>
+                <th class="border px-4 py-2">Tanav</th>
+                <th class="border px-4 py-2">Maja</th>
+                <th class="border px-4 py-2">Linn</th>
+                <th class="border px-4 py-2">Postiindeks</th>
+                <th class="border px-4 py-2">Actions</th>
+            </tr>
+            </thead>
+            <tbody id="aadressList"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Edit Aadress Modal -->
+<div id="editAadressModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded p-4">
+        <h2 class="text-xl font-semibold mb-2">Edit Aadress</h2>
+        <form id="editAadressForm" class="mb-4">
+            <div class="mb-4">
+                <label for="editTanav" class="block mb-2">Tanav:</label>
+                <input type="text" id="editTanav" name="tanav" class="w-full border rounded py-2 px-3">
+            </div>
+            <div class="mb-4">
+                <label for="editMaja" class="block mb-2">Maja:</label>
+                <input type="text" id="editMaja" name="maja" class="w-full border rounded py-2 px-3">
+            </div>
+            <div class="mb-4">
+                <label for="editLinn" class="block mb-2">Linn:</label>
+                <input type="text" id="editLinn" name="linn" class="w-full border rounded py-2 px-3">
+            </div>
+            <div class="mb-4">
+                <label for="editPostiindeks" class="block mb-2">Postiindeks:</label>
+                <input type="text" id="editPostiindeks" name="postiindeks" class="w-full border rounded py-2 px-3">
+            </div>
+            <div>
+                <button type="submit" class="bg-blue-500 text-white rounded py-2 px-4">Update</button>
+                <button id="cancelEditButton" class="bg-red-500 text-white rounded py-2 px-4 ml-2">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    async function fetchAadressData() {
+        const response = await fetch('/aadress');
+        const aadressData = await response.json();
+
+        const aadressList = document.getElementById('aadressList');
+        aadressList.innerHTML = '';
+
+        aadressData.forEach(aadress => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="border px-4 py-2">${aadress.tanav}</td>
+                <td class="border px-4 py-2">${aadress.maja}</td>
+                <td class="border px-4 py-2">${aadress.linn}</td>
+                <td class="border px-4 py-2">${aadress.postiindeks}</td>
+                <td class="border px-4 py-2">
+                    <button class="bg-yellow-500 text-white rounded py-1 px-2 mr-2" onclick="openEditModal('${aadress._id}')">Edit</button>
+                    <button class="bg-red-500 text-white rounded py-1 px-2" onclick="deleteAadress('${aadress._id}')">Delete</button>
+                </td>
+            `;
+
+            aadressList.appendChild(row);
+        });
+    }
+
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        const tanav = formData.get('tanav');
+        const maja = formData.get('maja');
+        const linn = formData.get('linn');
+        const postiindeks = formData.get('postiindeks');
+
+        const response = await fetch('/aadress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ tanav, maja, linn, postiindeks })
+        });
+
+        if (response.ok) {
+            form.reset();
+            await fetchAadressData();
+        } else {
+            console.error('Error adding Aadress:', response.status);
+        }
+    }
+
+    async function openEditModal(id) {
+        const modal = document.getElementById('editAadressModal');
+        modal.classList.remove('hidden');
+
+        const response = await fetch('http://localhost:3000/aadress');
+        const aadressData = await response.json();
+
+        const aadress = aadressData.find((item) => item._id === id);
+
+        const editForm = document.getElementById('editAadressForm');
+        editForm.addEventListener('submit', (event) => handleEditFormSubmit(event, id));
+
+        document.getElementById('editTanav').value = aadress.tanav || '';
+        document.getElementById('editMaja').value = aadress.maja || '';
+        document.getElementById('editLinn').value = aadress.linn || '';
+        document.getElementById('editPostiindeks').value = aadress.postiindeks || '';
+    }
+
+    async function handleEditFormSubmit(event, id) {
+        event.preventDefault();
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        const tanav = formData.get('tanav');
+        const maja = formData.get('maja');
+        const linn = formData.get('linn');
+        const postiindeks = formData.get('postiindeks');
+
+        const updatedAadress = {};
+
+        if (tanav) {
+            updatedAadress.tanav = tanav;
+        }
+        if (maja) {
+            updatedAadress.maja = maja;
+        }
+        if (linn) {
+            updatedAadress.linn = linn;
+        }
+        if (postiindeks) {
+            updatedAadress.postiindeks = postiindeks;
+        }
+
+        const response = await fetch(`/aadress/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedAadress)
+        });
+
+        if (response.ok) {
+            closeEditModal();
+            await fetchAadressData();
+        } else {
+            console.error('Error updating Aadress:', response.status);
+        }
+    }
+
+    function closeEditModal() {
+        const modal = document.getElementById('editAadressModal');
+        modal.classList.add('hidden');
+    }
+
+    async function deleteAadress(id) {
+        const confirmDelete = confirm('Are you sure you want to delete this Aadress?');
+        if (!confirmDelete) return;
+
+        const response = await fetch(`/aadress/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            await fetchAadressData();
+        } else {
+            console.error('Error deleting Aadress:', response.status);
+        }
+    }
+
+    document.getElementById('addAadressForm').addEventListener('submit', handleFormSubmit);
+    document.getElementById('cancelEditButton').addEventListener('click', closeEditModal);
+    fetchAadressData();
+</script>
+
 </body>
+
 </html>
