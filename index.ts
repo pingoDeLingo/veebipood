@@ -8,6 +8,7 @@ import maksestaatusController from "./controllers/maksestaatusController";
 import kontaktAndmedController from "./controllers/kontaktAndmedController";
 import klientController from "./controllers/klientController";
 import arveController from "./controllers/arvecontroller";
+import path from "path";
 
 const bodyParser = require('body-parser');
 const app: Express = express();
@@ -23,11 +24,11 @@ database.once('connected', () => {
     console.log('Database Connected');
 })
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('Express + TypeScript Server');
-});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+
+// Serve static files from the "public" folder
+app.use(express.static(path.join(__dirname, 'public'), { index: 'index.html' }));
 
 app.use('/', toodecontroller);
 app.use('/', kategooriacontroller);
