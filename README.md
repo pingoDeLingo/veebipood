@@ -4,7 +4,7 @@
 
 Clone the reop and Install all dependencies
 
--Usage
+- Usage
 
 Open it by using nodemon index.ts and from there you can insert data about the street, city, aadress and postcode 
 
