@@ -2,7 +2,7 @@
 
 - Installation
 
-Clone the reop and Install all dependencies
+Clone the repo and Install all dependencies
 
 - Usage
 
