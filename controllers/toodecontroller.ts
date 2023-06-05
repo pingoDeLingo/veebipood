@@ -14,6 +14,87 @@ router.get('/toode', async (req: Request, res: Response) => {
     }
 });
 
+router.get('/aegunud-toode', async (req: Request, res: Response) => {
+    try {
+        const currentDate = new Date();
+
+        const expiredDevices = await Toode.find({ vananemisaeg: { $lt: currentDate } });
+
+        res.json(expiredDevices);
+    } catch (error) {
+        console.error('Error retrieving expired devices:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
+router.get('/hinnad-kokku', async (req: Request, res: Response) => {
+    try {
+        const totalCost = await Toode.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$hind" }
+                }
+            }
+        ]);
+
+        const cost = totalCost[0].total;
+
+        res.json({ totalCost: cost });
+    } catch (error) {
+        console.error('Error calculating total cost:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
+
+router.get('/aegunud-hind-kokku', async (req: Request, res: Response) => {
+    try {
+        const currentDate = new Date();
+
+        const totalCostExpired = await Toode.aggregate([
+            {
+                $match: {
+                    vananemisaeg: { $lt: currentDate }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$hind" }
+                }
+            }
+        ]);
+
+        const costExpired = totalCostExpired[0] ? totalCostExpired[0].total : 0;
+
+        res.json({ totalCostExpired: costExpired });
+    } catch (error) {
+        console.error('Error calculating total cost of expired products:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
+
+router.get('/unactive-toode', async (req, res) => {
+    try {
+        const inactiveProducts = await Toode.find({ aktiivne: false });
+
+        res.json(inactiveProducts);
+    } catch (error) {
+        console.error('Error retrieving inactive products:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.get('/active-toode', async (req, res) => {
+    try {
+        const activeProducts = await Toode.find({ aktiivne: true });
+
+        res.json(activeProducts);
+    } catch (error) {
+        console.error('Error retrieving active products:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 router.post('/toode', async (req: Request, res: Response) => {
 
     const kategooria = new Kategooria({
