@@ -31,6 +31,12 @@ router.post('/toode', async (req: Request, res: Response) => {
             laokogus: req.body.laokogus,
             vananemisaeg: req.body.vananemisaeg
         });
+        if (newToode.hind <= 0) {
+            return res.status(404).json({ error: 'Price suck kys' });
+        }
+        if (newToode.vananemisaeg && newToode.vananemisaeg < new Date()) {
+            return res.status(400).json({ error: 'Aging time cannot be in the past' });
+        }
         const savedToode = await newToode.save();
         res.status(201).json(savedToode);
     } catch (error) {
