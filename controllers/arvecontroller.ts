@@ -195,4 +195,5 @@ router.get('/klient/:id/arved/summa', async (req: Request, res: Response) => {
     }
 });
 
+
 export default router;
