@@ -66,6 +66,22 @@ router.post('/arve', async (req: Request, res: Response) => {
     }
 });
 
+router.get('/arve/unpaid', async (req: Request, res: Response) => {
+    try {
+        const unpaidMaksestaatus = await Maksestaatus.find({ makseseisund: false });
+
+        const unpaidArves = await Arve.find({ maksestaatus: { $in: unpaidMaksestaatus } })
+            .populate('arverida')
+            .populate('klient')
+            .populate('maksestaatus');
+
+        res.json(unpaidArves);
+    } catch (error) {
+        console.error('Error retrieving unpaid arve data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 router.put('/arve/:id', async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
