@@ -111,4 +111,88 @@ router.delete('/arve/:id', async (req: Request, res: Response) => {
     }
 });
 
+// Kõik maksmata arved kõikide klientide osas millel on maksetähtaeg ületatud
+router.get('/arved/maksetahtaeg-yletatud', async (req, res) => {
+    try {
+        const currentDate = new Date();
+
+        const overdueInvoices = await Arve.find({
+            'maksestaatus.makseseisund': false,
+            'maksestaatus.maksmiseTahtaeg': { $not: currentDate }
+        })
+            .populate('klient')
+            .populate('maksestaatus');
+
+        res.json(overdueInvoices);
+    } catch (error) {
+        console.error('Error retrieving overdue invoices:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Kõik ühe kliendi maksmata arved
+router.get('/klient/:id/arved/maksmata', async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        const unpaidInvoices = await Arve.find({ klient: id, maksestaatus: { $ne: null } }).populate('klient').populate('maksestaatus');
+
+        res.json(unpaidInvoices);
+    } catch (error) {
+        console.error('Error retrieving unpaid invoices for a client:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Kõik ühe kliendi maksmata arved millel on maksetähtaeg ületatud
+router.get('/klient/:id/arved/maksetahtaeg-yletatud', async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const currentDate = new Date();
+
+        const overdueInvoices = await Arve.find({ klient: id, maksestaatus: { $ne: null }, 'maksestaatus.maksmiseTahtaeg': { $lt: currentDate } })
+            .populate('klient')
+            .populate('maksestaatus');
+
+        res.json(overdueInvoices);
+    } catch (error) {
+        console.error('Error retrieving overdue invoices for a client:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Kõik ühe kliendi arved
+router.get('/klient/:id/arved', async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        const clientInvoices = await Arve.find({ klient: id }).populate('klient').populate('maksestaatus');
+
+        res.json(clientInvoices);
+    } catch (error) {
+        console.error('Error retrieving client invoices:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Ühe kliendi kõikide arvete summa kokku
+router.get('/klient/:id/arved/summa', async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        const client = await Klient.findById(id);
+        const invoices = await Arve.find({ klient: id });
+
+        let totalSum = 0;
+        invoices.forEach((invoice) => {
+            totalSum += invoice.kogusumma;
+        });
+
+        res.json({ klient: client.nimi, summa: totalSum });
+    } catch (error) {
+        console.error('Error calculating total invoice sum for a client:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 export default router;
